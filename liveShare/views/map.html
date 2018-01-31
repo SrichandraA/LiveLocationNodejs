@@ -1,0 +1,73 @@
+<html>
+
+<head>
+	<style type="text/css">
+		#map {
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6HigYiuO38-9UBLxL1pGYeMWMwGbkQzw"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			var count = 0;
+			var toStop=0;
+			worker();
+
+			function worker() {
+				$.ajax({
+					url: '/getlocation',
+					type: 'GET',
+					success: function(data) {
+						data = JSON.parse(data);
+						console.log("Data:" + data[0].latitude + "-" + data[0].longitude);
+						if (data[0].latitude == 0.0) {
+							toStop=1;
+							alert("Live location sharing is stopped.. Try after sometime..");
+						} else {
+							initMap(data[0].latitude, data[0].longitude);
+
+						}
+					},
+					complete: function() {
+						// Schedule the next request when the current one's complete
+						if(toStop != 1)
+						setTimeout(worker, 5000);
+					
+					},
+					error: function(xhr, status, error) {
+						console.log('Error: ' + error.message);
+					},
+				});
+			}
+
+			function initMap(latitude, longitude) {
+				if (count == 0) {
+					var location = {
+						lat: latitude,
+						lng: longitude
+					};
+					var map = new google.maps.Map(document.getElementById("map"), {
+						zoom: 18,
+						center: location,
+					});
+					count++;
+				}
+				var marker = new google.maps.Marker({
+					position: location,
+					map: map
+				});
+			}
+
+		});
+	</script>
+
+</head>
+
+<body>
+	<div id="map"></div>
+</body>
+
+</html>

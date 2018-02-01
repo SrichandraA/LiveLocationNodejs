@@ -42,19 +42,19 @@
 					},
 				});
 			}
-
+            var map;
 			function initMap(latitude, longitude) {
                 	var location = {
 						lat: latitude,
 						lng: longitude
 					};
-//				if (count == 0) {
-				var map = new google.maps.Map(document.getElementById("map"), {
+				if (count == 0) {
+				 map = new google.maps.Map(document.getElementById("map"), {
 						zoom: 18,
 						center: location,
 					});
-					//count++;
-//				}
+					count++;
+				}
 				var marker = new google.maps.Marker({
 					position: location,
 					map: map

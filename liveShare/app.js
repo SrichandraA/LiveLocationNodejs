@@ -40,9 +40,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/googleMap',function(req,res){
+          console.log("open map");
+
     res.render('map.html');
 });
 app.put('/updatelocation',urlencodedParser, function(req,res){
+          console.log("update operation");
+
   console.log(req.body.id);
  	var data = [
     {
@@ -62,6 +66,7 @@ app.put('/updatelocation',urlencodedParser, function(req,res){
 app.get('/getlocation',function(req,res){
   con.query("SELECT latitude,longitude FROM location",function(err,result){
 	   if(err) throw err;
+      console.log("select operation");
      console.log(result);
 	   res.send(JSON.stringify(result));
    });

@@ -72,6 +72,23 @@ app.get('/getlocation',function(req,res){
    });
 });
 
+app.post('/insertlocation',function(req,res){
+      var data = {
+        latitude: req.body.latitude,
+        longitude: req.body.longitude
+       
+      };
+    sqlInsert = 'INSERT INTO location SET ?';
+    con.query(sqlInsert,data,function(err,result1){
+        if(err) throw err;
+console.log("inserted");
+
+    });
+  con.query("SELECT MAX(id) as MAX FROM location", function (err, result, fields) {
+            if(err) throw err;
+    res.send(JSON.stringify(result));
+          });
+});
 app.use('/', index);
 app.use('/users', users);
 

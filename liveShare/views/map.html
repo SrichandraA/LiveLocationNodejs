@@ -43,6 +43,7 @@
 				});
 			}
             var map;
+            var marker;
 			function initMap(latitude, longitude) {
                 	var location = {
 						lat: latitude,
@@ -55,7 +56,7 @@
 					});
 					count++;
 				}
-				var marker = new google.maps.Marker({
+				marker = new google.maps.Marker({
 					position: location,
 					map: map
 				});

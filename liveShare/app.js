@@ -11,7 +11,7 @@ var users = require('./routes/users');
 
 var app = express();
 var urlencodedParser = bodyParser.urlencoded({extended: false});
-
+var idForMap;
 var sqlUpdate;
 var con =mysql.createConnection({
   host:"localhost",
@@ -39,11 +39,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/googleMap',function(req,res){
-          console.log("open map");
+app.get('/getIdForMap', function(req, res, next) {
+  res.send(idForMap);
+});
 
+app.get('/googleMap/:id',function(req,res){
+          console.log("open map");
+          console.log(req.params.id);
+          idForMap=req.params.id;
     res.render('map.html');
 });
+
 app.put('/updatelocation',urlencodedParser, function(req,res){
           console.log("update operation");
 
@@ -71,6 +77,18 @@ app.get('/getlocation',function(req,res){
 	   res.send(JSON.stringify(result));
    });
 });
+
+app.get('/getlocation/:id',function(req,res){
+    var data = {id: req.params.id};
+
+  con.query("SELECT latitude,longitude FROM location WHERE ?",data,function(err,result){
+	   if(err) throw err;
+      console.log("select operation");
+     console.log(result);
+	   res.send(JSON.stringify(result));
+   });
+});
+
 
 app.post('/insertlocation',function(req,res){
       var data = {

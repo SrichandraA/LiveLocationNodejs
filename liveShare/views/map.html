@@ -12,19 +12,32 @@
 
 	<script type="text/javascript">
 		$(function() {
+
 			var count = 0;
-			var toStop=0;
-			worker();
+			var toStop = 0;
+			var id;
+
+			$.ajax({
+				url: '/getIdForMap',
+				type: 'GET',
+
+				success: function(data) {
+					id = data;
+					console.log(data);
+					worker();
+
+				}
+			});
 
 			function worker() {
 				$.ajax({
-					url: '/getlocation',
+					url: '/getlocation/' + id,
 					type: 'GET',
 					success: function(data) {
 						data = JSON.parse(data);
 						console.log("Data:" + data[0].latitude + "-" + data[0].longitude);
 						if (data[0].latitude == 0.0) {
-							toStop=1;
+							toStop = 1;
 							alert("Live location sharing is stopped.. Try after sometime..");
 						} else {
 							initMap(data[0].latitude, data[0].longitude);
@@ -33,40 +46,40 @@
 					},
 					complete: function() {
 						// Schedule the next request when the current one's complete
-						if(toStop != 1)
-						setTimeout(worker, 5000);
-					
+						if (toStop != 1)
+							setTimeout(worker, 5000);
+
 					},
 					error: function(xhr, status, error) {
 						console.log('Error: ' + error.message);
 					},
 				});
 			}
-            var map;
-            var marker;
+			var map;
+			var marker;
+
 			function initMap(latitude, longitude) {
-                	var location = {
-						lat: latitude,
-						lng: longitude
-					};
+				var location = {
+					lat: latitude,
+					lng: longitude
+				};
 				if (count == 0) {
-				 map = new google.maps.Map(document.getElementById("map"), {
+					map = new google.maps.Map(document.getElementById("map"), {
 						zoom: 18,
 						center: location,
 					});
-                    marker = new google.maps.Marker({
-					position: location,
-					map: map
-				});
+					marker = new google.maps.Marker({
+						position: location,
+						map: map
+					});
 					count++;
+				} else {
+					marker.setMap(null);
+					marker = new google.maps.Marker({
+						position: location,
+						map: map
+					});
 				}
-                else{
-                    marker.setMap(null);
-                    marker = new google.maps.Marker({
-					position: location,
-					map: map
-				});
-                }
 
 			}
 
